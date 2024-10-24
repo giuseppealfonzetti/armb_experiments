@@ -1,4 +1,4 @@
-lab_experiment <- 'setting1'
+lab_experiment <- 'ber_id_fxd'
 path <- paste0('output/', lab_experiment, '/')
 # dir.create(path, recursive = TRUE)
 
@@ -6,8 +6,9 @@ resp <- binomial(link="logit")
 # data generation function for the experiment
 genData_experiment <- function(PAR, N, P, SEED = 123){
   set.seed(SEED)
-  X <- matrix(rt(N*P, df = 3), N, P)
-  Y <- armb::simy(FAMILY = resp, ETA = X%*%PAR/sqrt(P))
+  X <- matrix(rnorm(N*P), N, P)
+  MU <- resp$linkinv(X%*%PAR/sqrt(P))
+  Y <- sapply(MU, function(mui) rbinom(1, 1, prob = mui))
 
   return(list('X' = X, 'Y' = Y))
 }
@@ -15,10 +16,10 @@ genData_experiment <- function(PAR, N, P, SEED = 123){
 save(genData_experiment, file = paste0(path, "setup.rda"))
 
 # settings investigated
-sims <- tidyr::expand_grid(n = c(1e3, 2e3), p = c(10, 15), seed = 1:2) |>
+sims_setup <- qs::qread("output/sims_setup.qs")
+sims <- sims_setup |>
   dplyr::mutate(
     theta = purrr::map(p, ~rep(1, .x))
   )
 
 save(sims, resp, genData_experiment, file = paste0(path, "setup.rda"))
-
