@@ -4,10 +4,10 @@
 # Intro
 
 This repository contains all the code needed to reproduce all the
-simulations and real data experiments presented in the paper
-`Scalable inference via averaged Robbins-Monro bootstrap`.
+simulations and real data experiments presented in the paper *Scalable
+inference via averaged Robbins-Monro bootstrap*.
 
-## How to use
+## How to use this repository
 
 Clone the repository locally with
 
@@ -20,8 +20,8 @@ the `R` environment:
 renv::restore()
 ```
 
-Use `make` to run the experiments pipeline from the console or
-`Build All` from Rstudio.
+Run `make` to run the experiments pipeline from the console or use the
+`Build All` button from Rstudio.
 
 As can be seen in the `Makefile`, running the pipeline creates an
 `output/` folder where all results will be stored, and a `data/` folder
