@@ -1,4 +1,4 @@
-lab_experiment <- 'ber_eq_fxd'
+lab_experiment <- 'ber_eq'
 path <- paste0('output/', lab_experiment, '/')
 # dir.create(path, recursive = TRUE)
 

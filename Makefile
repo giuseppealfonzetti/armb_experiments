@@ -1,13 +1,13 @@
-num_cores = 5
+num_cores = 4
 
-experiments = ber_id_fxd ber_eq_fxd ber_toe_fxd
+experiments = ber_id ber_eq ber_toe poi_id
 
-all: $(experiments)
+all: $(experiments) real_data
 
 clean:
 	rm -r output
 
-$(experiments): %: output/%/setup.rda output/%/gt.qs output/%/mle.qs output/%/bt.qs output/%/blb.qs output/%/armb.qs
+$(experiments): %: output/%/setup.rda output/%/gt.qs output/%/mle.qs output/%/bt.qs output/%/blb.qs output/%/armb.qs sims_plots
 
 output/%/setup.rda: R/sett/%.R R/sett/common.R
 	@echo "\n*********************************\
@@ -47,8 +47,30 @@ output/%/armb.qs: R/armb.R output/%/setup.rda output/%/mle.qs
 				 \n**********************************************\n"
 	Rscript R/armb.R $* $(num_cores)
 
+sims_plots:
+	@echo "\n*****************************************\
+				 \n* Read simulation results and save plots \
+				 \n******************************************\n"
+	Rscript R/sims_plots.R
 
 
+real_data: data/aps_dataset.zip data/aps_failure_training_set.csv output/aps_failure.png
 
+data/aps_dataset.zip:
+	@echo "\n**********************************************\
+				 \n* APS SCANIA DATASET: Download \
+				 \n**********************************************\n"
+	mkdir -p data/
+	curl -o data/aps_dataset.zip -L https://archive.ics.uci.edu/static/public/421/aps+failure+at+scania+trucks.zip
+
+data/aps_failure_training_set.csv:
+	unzip -o data/aps_dataset.zip -d data/
+
+output/aps_failure.png: R/aps.R
+	@echo "\n**********************************************\
+				 \n* APS SCANIA DATASET: Run experiment \
+				 \n**********************************************\n"
+	mkdir -p output/
+	Rscript R/aps.R
 
 

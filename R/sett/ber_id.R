@@ -1,4 +1,4 @@
-lab_experiment <- 'ber_id_fxd'
+lab_experiment <- 'ber_id'
 path <- paste0('output/', lab_experiment, '/')
 # dir.create(path, recursive = TRUE)
 

@@ -1,3 +1,4 @@
+if(commandArgs(trailingOnly = TRUE)[2]>1)pbo = pbapply::pboptions(type="txt")
 # Identify the experiment
 lab_experiment <- commandArgs(trailingOnly = TRUE)[1]
 path <- paste0('output/', lab_experiment, '/')
@@ -13,7 +14,7 @@ glmFun <- function(D, IDX, START){
 
 # Resample and fit
 btstrp <- mle |>
-  tidyr::expand_grid(nreps = c(100, 200))
+  tidyr::expand_grid(nreps = c(100))
 glm_fit <- pbapply::pblapply(purrr::transpose(btstrp), FUN = function(x){
 
   cat(paste0("setting n:",x$n, ", p:", x$p, ", R:",x$nreps, ", seed:",x$seed, " | started at ", format(Sys.time(), format = "%F %R")))

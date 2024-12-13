@@ -1,3 +1,4 @@
+if(commandArgs(trailingOnly = TRUE)[2]>1)pbo = pbapply::pboptions(type="txt")
 # Identify the experiment
 lab_experiment <- commandArgs(trailingOnly = TRUE)[1]
 path <- paste0('output/', lab_experiment, '/')
