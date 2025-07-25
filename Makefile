@@ -1,20 +1,21 @@
-num_cores = 4
+num_cores = 1
 
-experiments = ber_id ber_eq ber_toe poi_id
+experiments = ber_id ber_eq ber_toe poi_id bin_id
 
-all: $(experiments) real_data
+all: $(experiments) sims_plots real_data
 
 clean:
 	rm -r output
 
-$(experiments): %: output/%/setup.rda output/%/gt.qs output/%/mle.qs output/%/bt.qs output/%/blb.qs output/%/armb.qs sims_plots
+$(experiments): %:  output/%/setup.rda output/%/gt.qs output/%/mle.qs output/%/bt.qs output/%/armb.qs output/%/blb.qs
 
-output/%/setup.rda: R/sett/%.R R/sett/common.R
+output/%/setup.rda: R/sett/%.R R/sett/common.R R/sett/common_ri.R
 	@echo "\n*********************************\
 				 \n* $*: Initialisation\
 				 \n*********************************\n"
 	mkdir -p output/$*/
 	Rscript R/sett/common.R
+	Rscript R/sett/common_ri.R
 	Rscript R/sett/$*.R
 
 output/%/gt.qs: R/ground_truth.R output/%/setup.rda
@@ -53,24 +54,34 @@ sims_plots:
 				 \n******************************************\n"
 	Rscript R/sims_plots.R
 
-
-real_data: data/aps_dataset.zip data/aps_failure_training_set.csv output/aps_failure.png
+real_data: data/aps_dataset.zip  data/wilt_dataset.zip output/aps.pdf output/wilt.pdf
 
 data/aps_dataset.zip:
 	@echo "\n**********************************************\
 				 \n* APS SCANIA DATASET: Download \
 				 \n**********************************************\n"
-	mkdir -p data/
-	curl -o data/aps_dataset.zip -L https://archive.ics.uci.edu/static/public/421/aps+failure+at+scania+trucks.zip
+	mkdir -p data/aps/
+	curl -o data/aps/aps_dataset.zip -L https://archive.ics.uci.edu/static/public/421/aps+failure+at+scania+trucks.zip
+	unzip -o data/aps/aps_dataset.zip -d data/aps/
 
-data/aps_failure_training_set.csv:
-	unzip -o data/aps_dataset.zip -d data/
-
-output/aps_failure.png: R/aps.R
+data/wilt_dataset.zip:
 	@echo "\n**********************************************\
-				 \n* APS SCANIA DATASET: Run experiment \
+				 \n* WILT DATASET: Download \
+				 \n**********************************************\n"
+	mkdir -p data/
+	curl -o data/wilt_dataset.zip -L https://archive.ics.uci.edu/static/public/285/wilt.zip
+	unzip -o data/wilt_dataset.zip -d data/wilt/
+
+output/aps.pdf: R/realdata_aps.R
+	@echo "\n***********************************************\
+				 \n* APS SCANIA DATASET: Run experiments \
+				 \n***********************************************\n"
+	mkdir -p output/
+	Rscript R/realdata_aps.R
+
+output/wilt.pdf: R/realdata_appendix.R
+	@echo "\n**********************************************\
+				 \n* WILT, MAGIC and LIKE DATASETS: Run experiment \
 				 \n**********************************************\n"
 	mkdir -p output/
-	Rscript R/aps.R
-
-
+	Rscript R/realdata_appendix.R
