@@ -54,8 +54,8 @@ sims_plots:
 				 \n******************************************\n"
 	Rscript R/sims_plots.R
 
-real_data: data/aps_dataset.zip  data/wilt_dataset.zip output/aps.pdf output/wilt.pdf
-
+real_data: data/aps_dataset.zip  data/wilt_dataset.zip  output/wilt.pdf
+#output/aps.pdf
 data/aps_dataset.zip:
 	@echo "\n**********************************************\
 				 \n* APS SCANIA DATASET: Download \
@@ -72,16 +72,16 @@ data/wilt_dataset.zip:
 	curl -o data/wilt_dataset.zip -L https://archive.ics.uci.edu/static/public/285/wilt.zip
 	unzip -o data/wilt_dataset.zip -d data/wilt/
 
-output/aps.pdf: R/realdata_aps.R
+output/aps.pdf: R/realdata/realdata_aps.R
 	@echo "\n***********************************************\
 				 \n* APS SCANIA DATASET: Run experiments \
 				 \n***********************************************\n"
 	mkdir -p output/
-	Rscript R/realdata_aps.R
+	Rscript R/realdata/realdata_aps.R
 
-output/wilt.pdf: R/realdata_appendix.R
+output/wilt.pdf: R/realdata/realdata_appendix.R
 	@echo "\n**********************************************\
 				 \n* WILT, MAGIC and LIKE DATASETS: Run experiment \
 				 \n**********************************************\n"
 	mkdir -p output/
-	Rscript R/realdata_appendix.R
+	Rscript R/realdata/realdata_appendix.R
