@@ -32,10 +32,13 @@ mle <- c(
 glmerFun <- function(D, IDX, START, FML) {
   dmat <- purrr:::reduce(D[IDX], dplyr::bind_rows)
   mod <- lme4::glmer(as.formula(FML), family = binomial(), data = dmat)
-  out <- return(c(
-    summary(mod)$coef[, 1],
-    logsd = try(log(attributes(lme4::VarCorr(mod)$g)$stddev))
-  ))
+  out <- return(
+    c(
+      summary(mod)$coef[, 1],
+      logsd = try(log(attributes(lme4::VarCorr(mod)$g)$stddev))
+    ) *
+      sqrt(nrow(dmat) / nrow(data.like))
+  )
   return(out)
 }
 
@@ -55,13 +58,13 @@ bt.like.time <- tictoc::toc()
 
 step0 <- 1
 arm_ctrl <- list(
-  BURN = 5 * n,
+  BURN = 1 * n,
   STEPSIZE0 = step0,
-  TRIM = .1 * n,
+  TRIM = .25 * n,
   VERBOSE = FALSE,
   SEED = 123,
   CONV_CHECK = TRUE,
-  CONV_WINDOW = 3,
+  CONV_WINDOW = 1,
   TOL = 1e-2
 )
 tune_ctrl <- list(
@@ -198,14 +201,14 @@ gg.like <- res.like |>
     legend.position = "bottom",
     plot.subtitle = element_text(hjust = 0.5)
   ) +
-  scale_color_grey(start = .8, end = .2) +
+  scale_color_grey(start = .2, end = .8) +
   labs(
     x = "MLE",
     y = "Parameters",
     col = "",
     subtitle = "95% Confidence Intervals"
   )
-# gg.like
+#gg.like
 ggsave(gg.like, filename = "output/like.pdf", width = 10, height = 6)
 
 # endregion
@@ -268,11 +271,11 @@ step0 <- 1
 arm_ctrl <- list(
   BURN = 1 * n,
   STEPSIZE0 = step0,
-  TRIM = .1 * n,
+  TRIM = .25 * n,
   VERBOSE = FALSE,
   SEED = 123,
   CONV_CHECK = TRUE,
-  CONV_WINDOW = 3,
+  CONV_WINDOW = 1,
   TOL = 1e-2
 )
 tune_ctrl <- list(
