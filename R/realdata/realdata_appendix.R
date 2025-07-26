@@ -465,11 +465,11 @@ step0 <- 5
 arm_ctrl <- list(
   BURN = 1 * n,
   STEPSIZE0 = step0,
-  TRIM = .1 * n,
+  TRIM = .2 * n,
   VERBOSE = FALSE,
   SEED = 123,
   CONV_CHECK = TRUE,
-  CONV_WINDOW = 3,
+  CONV_WINDOW = 1,
   TOL = 1e-2
 )
 tune_ctrl <- list(
@@ -599,3 +599,5 @@ gg.wilt <- res.wilt |>
 ggsave(gg.wilt, filename = "output/wilt.pdf", width = 10, height = 6)
 
 # endregion
+library(patchwork)
+#gg.magic + gg.wilt + gg.like
