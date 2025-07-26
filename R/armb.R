@@ -62,11 +62,11 @@ armb_fit <- pbapply::pblapply(
       arm_ctrl <- list(
         BURN = 1 * x$n,
         STEPSIZE0 = step0,
-        TRIM = .1 * x$n,
+        TRIM = .25 * x$n,
         VERBOSE = FALSE,
         SEED = 123,
         CONV_CHECK = TRUE,
-        CONV_WINDOW = 3,
+        CONV_WINDOW = 1,
         TOL = 1 / x$nreps
       )
       tune_ctrl <- list(
